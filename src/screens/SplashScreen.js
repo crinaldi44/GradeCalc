@@ -1,8 +1,7 @@
-import React, {useRef, useState} from "react";
-import {View, Text, StyleSheet, ImageBackground, Dimensions, Image} from "react-native";
+import React, {useRef, useState, useEffect} from "react";
+import {View, Text, StyleSheet, ImageBackground, Dimensions, Image, Animated} from "react-native";
 import PagerView from "react-native-pager-view";
 import Button from "../components/Button";
-import useStable from "react-native-web/dist/modules/useStable";
 
 /**
  * Represents the first component displayed upon app entry.
@@ -10,9 +9,57 @@ import useStable from "react-native-web/dist/modules/useStable";
  */
 const SplashScreen = ({navigation}) => {
 
+    /**
+     * Mark: Properties.
+     */
     const [currPage, setCurrPage] = useState(0);
-
     const pager = useRef(PagerView)
+
+    const translateHero = useRef(new Animated.Value(1000)).current
+    const visibilityHero = useRef(new Animated.Value(0)).current
+
+    const translateInfo = useRef(new Animated.Value(40)).current
+    const opacityInfo = useRef(new Animated.Value(0)).current
+
+    useEffect(() => {
+        fadeInUp()
+    }, [])
+
+    /**
+     * Animates the component by fading in and up.
+     */
+    const fadeInUp = () => {
+
+        const anim1 = Animated.timing(translateHero, {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: true,
+        })
+        
+        const anim2 = Animated.timing(visibilityHero, {
+            toValue: 1,
+            duration: 1500,
+            useNativeDriver: true,
+        })
+
+        const animateHero = Animated.stagger(1000, [anim1, anim2])
+
+        const animInfo1 = Animated.timing(translateInfo, {
+            to: 0,
+            duration: 1000,
+            useNativeDriver: true
+        })
+
+        const animInfo2 = Animated.timing(opacityInfo, {
+            to: 1,
+            duration: 500,
+            useNativeDriver: true
+        })
+        
+        const animateInfo = Animated.stagger(200, [animInfo1, animInfo2])
+
+        Animated.stagger(1750, [animateHero, animateInfo]).start()
+    }
 
 
     /**
@@ -39,14 +86,26 @@ const SplashScreen = ({navigation}) => {
 
             >
                 <View key='1'>
-                    <View style={styles.splashHero}>
+                    <Animated.View style={{
+                        flex: 2,
+                        alignItems: 'center',
+                        overflow: 'hidden',
+                        opacity: visibilityHero,
+                        transform: [{translateY: translateHero}],
+                    }}>
                         <Image style={styles.splashHeroImage} source={require('../../assets/splash/getting-started.png')}
                                resizeMode='contain'/>
-                    </View>
-                    <View style={styles.splashInfo}>
+                    </Animated.View>
+                    <Animated.View style={{
+                        flex: 1.2,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        opacity: opacityInfo,
+                        transform: [{translateX: translateInfo}]
+                    }}>
                         <Text style={styles.splashInfoHeader}>Getting Started</Text>
                         <Text style={styles.splashInfoParagraph}>Use GradeCalc as a way to calculate your grade in Statistics! The total grade will be appropriated as a percentage of 100!</Text>
-                    </View>
+                    </Animated.View>
                 </View>
                 <View key='2'>
                     <View style={styles.splashHero}>
@@ -106,20 +165,18 @@ const styles = StyleSheet.create(
             flex: 4
         },
         splashHero: {
-            // backgroundColor: '#00ff00',
             flex: 2,
             alignItems: 'center',
-            overflow: 'hidden'
+            overflow: 'hidden',
+        },
+        splashInfo: {
+            flex: 1.2,
+            alignItems: 'center',
+            justifyContent: 'center',
         },
         splashHeroImage: {
             maxWidth: '90%',
             maxHeight: '100%'
-        },
-        splashInfo: {
-            // backgroundColor: '#0000ff',
-            flex: 1.2,
-            alignItems: 'center',
-            justifyContent: 'center',
         },
         splashInfoHeader: {
             fontSize: 23,
