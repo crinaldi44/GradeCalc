@@ -114,12 +114,10 @@ const styles = StyleSheet.create(
         },
         topResultsSection: {
             flex: 2.5,
-            backgroundColor: '#ff00ff',
             justifyContent: 'center',
             alignItems: 'center',
         },
         topResultsHeader: {
-            // backgroundColor: '#ff00ff',
             width: Dimensions.get('screen').width,
             flex: 2,
             justifyContent: 'center',
@@ -127,7 +125,6 @@ const styles = StyleSheet.create(
             top: '10%'
         },
         topResultsDetails: {
-            // backgroundColor: '#00ff00',
             width: Dimensions.get('screen').width,
             flex: 1,
             justifyContent: 'space-around'
